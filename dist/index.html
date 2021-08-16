@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/login.5be1f935.css">
+  <link rel="stylesheet" href="/bootstrap.min.18124153.css">
+  <script src="/jquery.4602dad8.js"></script>
+  <script src="/bootstrap.min.d87cdb98.js"></script>
+  <script src="/socket.io.0eae34d1.js"></script>
+<script src="/login.5be1f935.js"></script><script src="/bootstrap.min.18124153.js"></script></head>
+<body>
+  <div class="container login">
+    <div class="login-wrap">
+      <div class="login-header">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary header-button1" onclick="location.href = './index.html'">Login</button>
+          <button type="button" class="btn btn-primary header-button2" onclick="location.href = './registration.html'">Registration</button>
+        </div>
+      </div>
+      <div class="login-body form-group">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">*</span>
+          </div>
+          <input type="text" id="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">*</span>
+          </div>
+          <input type="text" id="password" class="form-control" placeholder="Password">
+        </div>
+        <button type="button" id="loginButton" class="btn btn-outline-danger">Login</button>
+      </div>
+    </div>
+  </div>  
+  <script src="/axios.5aeb44b7.js"></script>
+  <script>document.getElementById('loginButton').addEventListener('click', function () {
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+  axios.get("http://localhost:3300/api/user/".concat(email)).then(function (response) {
+    if (response.data.success && response.data.record.password == password) {
+      alert('Success Join!');
+    }
+  });
+});</script>
+</body>
+</html>

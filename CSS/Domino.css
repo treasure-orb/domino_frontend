@@ -1,0 +1,493 @@
+/*
+    Domino ThreeJS creado por Josep Antoni Bover Comas el 16/01/2019
+
+        CSS para el Dominó
+
+        Vista por defecto en el Laboratorio de pruebas  
+		devildrey33_Lab->Opciones->Vista = Filas;
+
+        Ultima modificación el 25/02/2019
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Baloo+Thambi');
+/*@import url('https://fonts.googleapis.com/css?family=Baloo+Thambi|Merienda|Righteous|ZCOOL+KuaiLe');*/
+
+/** {    
+/*    font-family: 'Righteous', cursive;              /* queda chula */
+/*    font-family: 'ZCOOL KuaiLe', cursive;           /* curiosa i no queda malament */
+/*    font-family: 'Merienda', cursive;              /* queda prou be */
+/*    line-height: 1.2rem;
+}*/
+/*
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh; /*  100% height */ /*
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}*/
+
+body {
+    color:rgb(25, 96, 250)
+}
+
+/* Idioma autom�tico */ 
+:lang(en) button::after, :lang(en) span::after {
+    content:attr(data-idioma-en);
+}
+:lang(cat) button::after, :lang(cat) span::after {
+    content:attr(data-idioma-cat);
+}
+:lang(es) button::after, :lang(es) span::after {
+    content:attr(data-idioma-es);
+}
+
+#MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #Msg1, #Msg2, #Msg3, #Msg4, button, input, #DatosJuego, #Historial {
+    font-family: 'Baloo Thambi', cursive;
+/*    line-height: 1.2rem; */
+}
+
+/* Landscape m�vil */
+@media only screen and (orientation:landscape) and (min-resolution: 1.2dppx) {
+    #MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #Msg1, #Msg2, #Msg3, #Msg4, button, input, #DatosJuego, #Historial {
+        line-height: 1rem;
+    }
+    #MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #DatosJuego {
+        zoom:0.75;
+        font-size:1.2rem !important;
+    }
+    
+    #Msg1, #Msg2, #Msg3, #Msg4, #Victoria, #Derrota, #PartidaGanada {
+        zoom:0.5;
+    }
+    
+    #BotonEmpezar, #BotonContinuar, #BotonContinuar2, #BotonTerminar, h1, h3 {
+        font-size:1.5rem !important;
+    }
+    
+}
+
+/* Portrait m�vil */
+@media  only screen and (orientation:portrait) and (min-resolution: 1.2dppx) {
+    #MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #Msg1, #Msg2, #Msg3, #Msg4, button, input, #DatosJuego, #Historial {
+        line-height: 1.5rem;
+    }
+    #MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #DatosJuego {
+        zoom:0.95;
+        font-size:1.3rem !important;
+    }
+    
+    #Msg1, #Msg2, #Msg3, #Msg4, #Victoria, #Derrota, #PartidaGanada {
+        zoom:0.5;
+    }
+    
+    #BotonEmpezar, #BotonContinuar, #BotonContinuar2, #BotonTerminar, h1, h3 {
+        font-size:2rem !important;
+    }
+    
+}
+
+
+/* Marcos con interfaz de usuario para el juego */
+#MarcoEmpezar, #MarcoContinuar, #MarcoEmpate, #MarcoTerminado, #MarcoOpciones, #MarcoEquipos {    
+    position:fixed;
+    border:0.1rem solid #000;
+    top:250%;
+    left:50%;
+    transform: translate(-50%, -50%);
+/*    background:rgba(0, 0, 200, 0.8);
+    color:#FFF;
+    text-shadow:1px 1px 1px #000;
+    border-radius:8px;*/
+/*    padding:0 0.2rem 0.2rem 0.2rem;*/
+    z-index:1000;
+    border:0.2rem solid transparent;
+    font-size:1.5rem;    
+    text-shadow:0.3rem 0.3rem 0.3rem #000;
+    transition:1s cubic-bezier(.49,.58,.56,1.47);
+    padding: 0.4rem;
+}
+
+#MarcoEmpezar[visible="true"], #MarcoContinuar[visible="true"], #MarcoEmpate[visible="true"], #MarcoTerminado[visible="true"], #MarcoOpciones[visible="true"], #MarcoEquipos[visible="true"] {
+    top:50%;
+}
+
+/*#Empezar:hover {
+    background-color: rgba(37,35,40, 0.9);
+    border:2px solid rgb(234, 80, 78);
+}*/
+
+#BotonEmpezar, #BotonContinuar, #BotonContinuar2, #BotonTerminar, #BotonEquipos, #BotonOpciones,  #BotonCerrarEquipos, #BotonCerrarOpciones {
+    font-size:2rem;
+    /*padding:0.5rem; */
+    display:table;
+    margin:auto;
+}
+
+.Centrado {
+    display:table;
+    margin:0.5rem auto 0 auto;
+}
+
+.Centrado > button {
+    margin: 0.2rem;
+/*    padding: 0.3rem;*/
+    font-size: 1.1rem;
+    vertical-align: middle;
+    display: table-cell;}
+
+button {
+    border:0.1rem solid #000;
+    cursor: pointer;    
+    color:#FFFFFF;
+    background: rgba(37,35,40, 1.0);    
+    transition:0.4s;
+    outline:0;
+}
+
+button:hover {
+    background-color: rgb(234, 80, 78);
+    /*border:1px solid rgb(234, 80, 78);    */
+}
+
+.PuntosMarcados, .IdiomaMarcado {
+    background-color: rgb(214, 60, 58);
+}
+
+#Msg1, #Msg2, #Msg3, #Msg4 {
+    position:fixed;
+    font-size:2rem;
+    transition:top 0.4s ease-out, left 0.4s ease-out, bottom 0.4s ease-out, right 0.4s ease-out;
+}
+
+#Msg1[ColorFondo="rojo"], #Msg2[ColorFondo="rojo"], #Msg3[ColorFondo="rojo"], #Msg4[ColorFondo="rojo"] {
+    background-color: rgb(214, 60, 58) !important;
+}
+
+#Msg1[ColorFondo="negro"], #Msg2[ColorFondo="negro"], #Msg3[ColorFondo="negro"], #Msg4[ColorFondo="negro"] {
+    background-color: rgba(37,35,40, 0.6) !important;
+}
+
+#Msg1[ColorFondo="verde"], #Msg2[ColorFondo="verde"], #Msg3[ColorFondo="verde"], #Msg4[ColorFondo="verde"] {
+    background-color: rgb(60, 214, 58) !important;
+}
+
+#Msg1 {
+    bottom:-50%;    
+    left:50%;
+    transform: translate(-50%, 0%);    
+}
+
+#Msg1[MsgVisible="true"] {
+    bottom:2%;
+}
+
+#Msg2 {
+    right:-100%;
+    top:50%;
+    transform: translate(0%, -50%);    
+}
+
+#Msg2[MsgVisible="true"] {
+    right:2%;
+}
+
+#Msg3 {
+    top:-50%;
+    left:50%;
+    transform: translate(-50%, 0%);
+}
+
+#Msg3[MsgVisible="true"] {
+    top:2%;
+}
+
+#Msg4 {
+    left:-100%;
+    top:50%;
+    transform: translate(0%, -50%);    
+}
+
+#Msg4[MsgVisible="true"] {
+    left:2%;
+}
+
+/*#MarcoPartida {
+    width:250px;
+    position:fixed;
+    top:-100%;
+    right:0%;
+    transition:0.4s;
+    z-index:1000;
+}
+
+#MarcoPartida[Visible="true"] {
+    top:0%;
+}
+
+#MarcoPartida > #TablaDatos {
+    width:100%;
+}*/
+
+#DatosJuego > table {
+    line-height: 1.4rem;
+}
+
+#DatosJuego {
+    margin:0;
+    display:none;    
+/*    width:7em; */
+    font-size:1.5rem;
+}
+
+#DatosJuego table > td[id] {
+    padding-left:1rem;
+}
+
+/*#DatosJuego #Turno, #DatosJuego #Jugador, #DatosJuego #Partida {
+    padding:4px;
+    display:inline-block;
+    width:calc(31% - 8px);
+    margin:0px;
+}*/
+
+hr {
+    display: block;
+    height: 0.1rem;
+    border: 0;
+    border-top: 0.2rem solid #FFF;
+    border-bottom: 0.1rem solid #000;
+    margin: 0.4em 0;
+    padding: 0; 
+}
+
+#Historial {
+    display:none;
+    width: 15rem;
+    right:0px;
+/*    min-height : 15em;
+    max-height : 200px;*/
+    height:15rem;
+    overflow-y:scroll;
+    border:0.1rem solid #000;
+/*    margin:0.4rem;*/
+    padding:0.2rem;
+    margin:0;
+    font-size:1rem;
+}
+
+/* Ficha mini del historial */
+#Historial img {
+    position: absolute;
+    top: 1rem;
+    zoom:0.30;
+    left:40rem;
+}
+
+.Historial_negro, .Historial_rojo, .Historial_verde {
+    position:relative;
+/*    min-height:23px;*/
+    height:1.5rem;
+    display:table;    
+/*    vertical-align:middle;*/
+}
+
+.Historial_negro > span, .Historial_rojo > span, .Historial_verde > span {
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.Historial_negro {
+    color:#FFF;
+/*    padding:0.2rem;*/
+}
+
+.Historial_verde {
+    color : rgb(60, 214, 58);
+/*    padding:0.2rem;*/
+}
+
+.Historial_rojo {
+/*    padding:0.2rem; */
+    color: orange;
+    /*text-shadow:1px 1px 1px #888;*/
+}
+
+#Historial::-webkit-scrollbar {
+    width:0.5rem;
+}
+
+/*#Historial::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}*/
+
+#Historial::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+/*  outline: 1px solid slategrey; */
+}
+
+/* Separaci�n entre el nombre del jugador, y la acci�n en el historial */
+#Historial > div > span + span {
+    padding-left: 0.4rem;
+}
+
+#DatosJuego[Visible="true"], #Historial[Visible="true"] {
+    display:block;
+}
+
+
+.Empate_Victoria {
+    color:rgb(57, 255, 20);
+}
+
+.Empate_Derrota {
+    color:rgb(235, 106, 14);
+}
+
+#MarcoEmpate > table {
+    margin:auto;
+}
+
+#MarcoEmpate > p, h1, h3 {
+    display: table;
+    margin:auto;
+}
+
+h1 { font-size:2rem; }
+h3 { font-size:1.7rem; }
+h1, h3 {
+    margin:0.3em auto;
+}
+
+#DatosJuego table > td { 
+    text-align:right;
+}
+
+
+
+#Msg1 span, #Msg2 span, #Msg3 span, #Msg4 span {
+/*    position:relative;
+    top: -5px;  */
+}
+
+/* Zoom para las fichas svg */
+#Msg1 img, #Msg2 img, #Msg3 img, #Msg4 img {
+    zoom:0.6;
+    position: relative;
+/*    top: 0.5rem;    */
+}
+
+
+/* Svg's con el pulgar arriba / abajo para hacer una aniamción de victoria / derrota */
+#Victoria, #Derrota, #ParitdaGanada {
+    position:fixed;
+    z-index:100;
+    zoom:0.5;
+    filter:drop-shadow(0.3rem 0.3rem 0.3rem #333);
+    left:60%;
+    top:100%;
+}
+
+#Victoria {
+    transform:rotateX(180deg);
+    animation:AniVictoria 5s ease 0s 1 normal;
+}
+
+#Derrota {
+    animation:AniDerrota 5s ease 0s 1 normal;
+}
+
+#ParitdaGanada {
+    animation:AniPartidaGanada 5s ease 0s 1 normal;    
+    transform:rotateZ(0deg);
+}
+
+@keyframes AniVictoria {
+    0%   { opacity:0.0; top:60%; }
+    80%  { opacity:1.0; top:20%; }
+    100% { opacity:0.0; top:-50%; }
+}
+
+
+@keyframes AniDerrota {
+    0%   { opacity:0.0; top:20%;  transform:rotateZ(0deg);  }
+    30%  { opacity:1.0; top:35%;  transform:rotateZ(10deg); }
+    70%  { opacity:1.0; top:20%;  transform:rotateZ(0deg);  }
+    100% { opacity:0.0; top:150%; transform:rotateZ(10deg); }
+}
+
+@keyframes AniPartidaGanada {
+    0%   { opacity:0.0; top:60%;  transform:rotateZ(0deg);  }
+    50%  { opacity:1.0; top:40%; transform:rotateZ(20deg); }
+    100% { opacity:0.0; top:20%; transform:rotateZ(31deg); }
+}
+/*#ME_J3, #ME_J4, #ME_E1 > td:nth-child(7), #ME_E2 > td:nth-child(7) {
+    padding-left:20px;
+}*/
+
+/* Puntuaciones */
+#ME_P1, #ME_P2, #ME_P3, #ME_P4, #ME_P13, #ME_P24, #MV_P1, #MV_P2, #MV_P3, #MV_P4, #MV_P13, #MV_P24  {
+    padding:0.35rem 0.1rem 0.35rem 0.2rem;
+    text-align:right;
+}
+
+#ME_P13, #ME_P24, #MV_P13, #MV_P24 {
+    border-top: 0.2rem solid #FFF;
+}
+
+.TablaPuntos, .TablaPuntos2 {
+    display:flex;
+    margin:auto;
+    line-height:1.4rem;
+/*  padding: 0.4rem;*/
+}
+
+.TablaPuntos > table, .TablaPuntos2 > table {
+    background: rgba(32,32,32,0.65);
+    padding:0.4rem;
+}
+
+
+/*.TablaPuntos { width:65%; }
+.TablaPuntos2 { width:90%; }*/
+
+.TablaPuntos > *, .TablaPuntos2 > * {
+    flex-basis: auto; /* default value */
+    flex-grow: 1;
+    flex:30%;
+    margin: 0 0.2rem;
+}
+
+.AniResaltar {
+    animation:AniResaltado 3s ease-in-out 0s infinite alternate;
+}
+
+@keyframes AniResaltado {
+    0%   { color:#FFF; }
+    100% { color:#FADA5E; }
+}
+
+.TablaPuntos input[type="text"] {
+    width:100%;
+    color:#FFF;
+    background:transparent;
+    outline:none;
+    border:0.2rem solid transparent;
+    font-size: 1rem;    
+}
+
+input[type="checkbox"] {
+    width:2rem;
+    height:1rem;
+    transition:0.4s;
+}
+
+
+/* Botones para escoger el idioma */
+#Idioma_en, #Idioma_cat, #Idioma_es {
+    font-size:1.5rem;
+}

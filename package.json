@@ -1,0 +1,23 @@
+{
+  "name": "axios-example",
+  "version": "1.0.0",
+  "description": "Juego de dominó 2 contra 2 para un solo jugador en 3D. El juego es 100% funcional, y puede ser personalizado.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1",
+    "socket.io": "^4.1.3"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}
