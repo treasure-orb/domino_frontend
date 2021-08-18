@@ -33,6 +33,7 @@ body {
 }
 
 .login .login-header .btn-group .header-button2 {
+  padding: 10px;
   border: none;
   border-left: 1px solid  white;
   border-bottom: 2px solid  white;

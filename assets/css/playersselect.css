@@ -1,0 +1,203 @@
+body {
+  background-color: rgb(26, 113, 243);
+}
+.player-select-wrap {
+  width: 100%;
+  height: 80vh;
+  margin: 0!important;
+}
+
+.game-rooms{
+  height: 100%;
+  width: 100%;
+  background-color: rgb(13, 82, 209);
+  border-radius: 10px;
+  border: 1px solid black;
+}
+.rooms-header {
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+  height: 10%;
+}
+.rooms-board {
+  margin: 3%;
+  background-color: rgb(8, 59, 170);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 94%;
+  height: 75%;
+  padding: 5px;
+}
+.rooms-footer {
+  width: 100%;
+  height: 10%;  
+  position: relative;
+}
+
+.rooms-footer button {
+  top: 15%;
+  width: 40%;
+  position: absolute;
+  left: 30%;
+}
+
+.rooms-board .room {
+  width: 100%;
+  height: 50px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background-color: rgb(0, 29, 109);
+  padding: 5px;
+  margin: 0 5px;
+  position: relative;
+}
+.rooms-board .room .room-players {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgb(2, 69, 168);
+  border-radius: 5px;
+  margin: 0 5px;
+  float: left;
+}
+.rooms-board .room .no-player {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgb(2, 69, 168);
+  border-radius: 5px;
+  background-color: rgb(14, 109, 250);
+  float: left;
+  margin: 0 5px;
+}
+.rooms-board .room .vs {
+  color: white;
+  float: left;
+}
+
+.center {
+  display: flex;
+  justify-content: space-around;
+}
+
+.player-board {
+  width: 100%;
+  height: 100%;
+}
+
+.game-statement {
+  width: 100%;
+  height: 30%;
+  border-radius: 10px;
+  border: 1px solid black;
+  background-color: rgb(250, 150, 1);
+  margin-bottom: 5%;
+}
+.chat-board{
+  width: 100%;
+  height: 65%;
+  background-color: rgb(170, 60, 243);
+  border-radius: 10px;
+  border: 1px solid black;
+}
+.chat-body {
+  width: 94%;
+  height: 82%;
+  margin: 0 3%;
+  margin-top: 3%;
+  background-color: rgb(131, 19, 235);
+  border-radius: 5px;
+}
+.chat-input {
+  width: 100%;
+  height: 7%;
+  margin: 0;
+  margin-top: 1%;
+}
+.chat-input input {
+  border: 5px solid rgb(32, 38, 51);
+  border-radius: 20px;
+}
+.chat-input button {
+  width: 100%;
+}
+
+.connected-players {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(13, 82, 209);
+  border-radius: 10px;
+  border: 1px solid black;
+}
+.players-header {
+  text-align: center;
+  color: white;
+  height: 10%;
+  font-size: 20px;
+}
+.players-list {
+  margin: 3%;
+  background-color: rgb(8, 59, 170);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 94%;
+  height: 85%;
+  padding: 5px;
+}
+.players-list .player{
+  width: 100%;
+  background-color: rgb(13, 72, 235);
+  border: 1px solid white;
+  height: 36px;
+  padding: 3px;
+  margin-bottom: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.players-list .player:hover {
+  background-color: rgb(3, 29, 116);
+}
+.players-list .player-list-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  float: left;
+  border: 2px solid white;
+}
+.players-list .player p{
+  position: absolute;
+  left: 35px;
+  width: 50%;
+  font-size: 16px;
+  color: white;
+}
+.modal-dialog {
+  max-width: 350px;
+}
+
+.modal-content {
+  background-color: rgb(4, 90, 248);
+
+}
+.modal-title {
+  text-align: center;
+  color: white;
+}
+
+
+.modal-footer button {
+    display: inline-block;
+}
+
+.modal-body .modal-player .modal-player-img{ 
+  width: 100px;
+  height: 100px;
+  border: 5px solid rgb(0, 89, 255);
+  border-radius: 10px;
+}
+.modal-body .modal-no-player {
+  width: 100px;
+  height: 100px;
+  background-color: rgb(0, 132, 255);
+  border: 5px solid rgb(0, 89, 255);
+  border-radius: 10px;
+}

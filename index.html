@@ -31,7 +31,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">*</span>
           </div>
-          <input type="text" id='password' class="form-control" placeholder="Password">
+          <input type="password" id='password' class="form-control" placeholder="Password">
         </div>
         <button type="button" id="loginButton"class="btn btn-outline-danger">Login</button>
       </div>
@@ -39,19 +39,28 @@
   </div>  
   <script src="./assets/axios/axios.js"></script>
   <script>
+    var socket = io('http://localhost:3030');
     document.getElementById('loginButton').addEventListener('click', function () {
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
-      axios.get(
-        `http://localhost:3300/api/user/${email}`,
-      )
-      .then(response=>{
-        if(response.data.success&&response.data.record.password == password) {
-          alert('Success Join!');
-        }
-      })            
+      if(!email&&!password) {
+        alert('Input the data correctly!');
+      }
+      else{
+        axios.get(
+          `http://localhost:3300/api/user/${email}`,
+        )
+        .then(response=>{
+          if(response.data.success) {
+            if(response.data.record.password == password) {
+              location.href = './playersselect.html?email='+email;
+            }
+            else alert('Input password correctly!');           
+          }
+          else alert("Input Email correctly");
+        })
+      }              
     })
-
   </script>
 </body>
 </html>
