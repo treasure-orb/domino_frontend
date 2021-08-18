@@ -201,3 +201,10 @@ body {
   border: 5px solid rgb(0, 89, 255);
   border-radius: 10px;
 }
+
+#game-start-button {
+  display: none;
+}
+#delete-room-button {
+  display: none;
+}

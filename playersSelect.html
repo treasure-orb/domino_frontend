@@ -16,7 +16,7 @@
           <h4 class="rooms-header">Game Rome Lists</h4>
           <div class='rooms-board' id='rooms-board'></div>
           <div class="rooms-footer">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createRoom">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createRoom" id='modal-show-button'>
               Create Room
             </button>
           </div>
@@ -68,6 +68,7 @@
         <div class="modal-footer">
           <div class="button-group center">
             <button type="button" class="btn btn-danger" data-dismiss="modal" id="delete-room-button">Delete</button>
+            <button type="button" class="btn btn-success" id='game-start-button'>Start</button>
             <button type="button" class="btn btn-success" id='create-room-button'>Create</button>
           </div>          
         </div>
@@ -84,23 +85,22 @@
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const email = urlParams.get('email')
+
     socket.emit('join', {email: email})
+
     socket.on('showUsers', (users)=>{
       var players = '';
       users.map((user)=>{
         if(user.email !== email)
           players += '<div class="player">'+ '<img src="./assets/img/avatar.png" class="player-list-avatar"><p>' + user.email + '<p></div>';
       })
-      document.getElementById('players-list').innerHTML = players;
-    })
+      $('#players-list').html(players);
+    })  
 
-    document.getElementById('create-room-button').addEventListener('click', (event) => {
-      socket.emit('createRoom', {roomEmail: email, createPlayerEmail: email});
-    })
     socket.on('showRooms', (rooms)=>{
       var roomsBoard = ''
-      rooms.map((room)=>{
-        roomsBoard += "<div class='room'><div class='center'>";
+      rooms.map((room, index)=>{
+        roomsBoard += "<div class='room' onclick='joinRoom("+index+")'><div class='center'>";
         room.players.map((player, index)=>{
 
           if(index == 2) roomsBoard += "<span class='vs'>vs</span>";
@@ -112,26 +112,62 @@
         }
         roomsBoard += "</div></div>";
       })
-      document.getElementById('rooms-board').innerHTML = roomsBoard;
+      $("#rooms-board").html(roomsBoard);
     })
-    socket.on('sameRoomPlayers', (players)=>{
+
+    socket.on('sameRoomPlayers', (room)=>{
       var modalPlayers = "<div class='modla-partner center'>";
-      players.map((player, index)=>{
-        modalPlayers += '<div class="modal-player"><img src="./assets/img/avatar.png" class="modal-player-img"></div>';
-        if(index == 1) {
-          modalPlayers += "</div><div class='modal-vs'><img src='./assets/img/vs.png'></div><div class='modal-partner center'>";
+      room.players.map((player, index)=>{
+        if(index == 2) {
+          modalPlayers += "</div><div class='modal-vs center'><img src='./assets/img/vs.png'></div><div class='modal-partner center'>";
         }
+        modalPlayers += '<div class="modal-player"><img src="./assets/img/avatar.png" class="modal-player-img"></div>';
+        
       })
-      for(var i= players.length; i<4; i++) {
+      for(var i= room.players.length; i<4; i++) {
         if(i==2) modalPlayers += "</div><div class='modal-vs center'><img src='./assets/img/vs.png'></div><div class='modal-partner center'>";
           modalPlayers += '<div class="modal-no-player"></div>';  
       }
       modalPlayers += "</div>";
-      document.getElementById('modal-player-board').innerHTML = modalPlayers
+      $("#modal-player-board").html(modalPlayers);
+      if(room.roomEmail != email) {
+        $('#delete-room-button').css('display', "none");
+        $('#create-room-button').css('display', "none");
+      }
+      else  {
+        $('#delete-room-button').css('display', "flex");
+        $('#create-room-button').css('display', "none");
+        $('#game-start-button').css('display', "flex");
+      }
     })
-    document.getElementById('delete-room-button').addEventListener('click', ()=>{
+
+
+    $('#create-room-button').click(() => {
+      socket.emit('createRoom', {roomEmail: email, createPlayerEmail: email}, (err)=>{
+        if(err) {
+          alert(err);
+          return;
+        }
+        $('#game-start-button').css('display', "flex");
+        $('#delete-room-button').css('display', "flex");
+      });
+    })
+
+    $('#delete-room-button').click(()=>{
       socket.emit("deleteRoom", {roomEmail: email});
     })
+
+    $('#modal-show-button').click(()=>{
+      $('#game-start-button').css('display', "none");      
+      $('#create-room-button').css('display', "flex");      
+      $('#delete-room-button').css('display', "none");
+      $('#modal-player-board').html("");      
+    })
+
+    joinRoom = (roomIndex) => {
+      socket.emit('joinPlayerInRoom', {roomIndex, playerEmail:email});
+      $('#modal-show-button').click();
+    }    
   </script>
 </body>
 </html>
