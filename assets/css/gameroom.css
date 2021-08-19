@@ -106,6 +106,8 @@ body {
   margin-top: 3%;
   background-color: rgb(131, 19, 235);
   border-radius: 5px;
+  padding: 3%;
+  position: relative;
 }
 .chat-input {
   width: 100%;
@@ -120,7 +122,39 @@ body {
 .chat-input button {
   width: 100%;
 }
+#chat-body {
+  width: 94%;
+  height: auto;
+  position: absolute;
+  bottom: 10px;
+  max-height: 94%;
+  overflow-y: auto;
+}
+.chat-body .message{
+  width: 100%;
+  height: 30px;
+  margin-top: 3px;
+}
+.chat-body .message .left-message {
+  float: left;
+  background-color: rgb(16, 113, 240);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  height: 100%;
+  padding: 3px 10px;
+  color: white;
+}
+.chat-body .message .right-message {
+  float: right;
+  background-color: rgb(16, 113, 240);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  height: 100%;
+  padding: 3px 10px;
+  color: white;
+  margin-top: 3px;
 
+}
 .connected-players {
   width: 100%;
   height: 100%;

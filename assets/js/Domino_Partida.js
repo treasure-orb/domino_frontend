@@ -73,8 +73,7 @@ var Domino_Partida = function() {
         this.Mano = 0;
         this.PuntosEquipo1 = 0;
         this.PuntosEquipo2 = 0;
-        this.Opciones.PuntosPorPartida = UI.PuntuacionPorPartida;
-        
+        this.Opciones.PuntosPorPartida = UI.PuntuacionPorPartida;        
         this.Continuar();
     };
     

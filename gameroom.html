@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/library/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/gameroom.css">
+</head>
+<body>
+  <div class="container-flex">
+    <div class="row player-select-wrap">
+      <div class=' col-lg-4 col-md-4 col-sm-12'>
+        <div class='game-rooms'>
+          <h4 class="rooms-header">Game Rome Lists</h4>
+          <div class='rooms-board' id='rooms-board'></div>
+          <div class="rooms-footer">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createRoom" id='modal-show-button'>
+              Create Room
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class=" col-lg-6 col-md-6 col-sm-12">
+        <div class="player-board">
+          <div class="game-statement"></div>
+          <div class="chat-board">
+            <div class="chat-body">
+              <div id="chat-body"></div>
+            </div>
+            <div class="chat-input row">
+              <div class='col-lg-10 col-md-10 col-sm-10'>
+                <input type="text" class="form-control" id="chat-input">
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <button class="btn btn-danger" id='chat-send-button'>Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=" col-lg-2 col-md-2 col-sm-2">
+        <div class="connected-players">
+          <h4 class="players-header">Connected Players</h4>
+          <div class="players-list" id='players-list'></div>
+        </div>            
+      </div>
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="createRoom">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="players" id='modal-player-board'>
+          </div>          
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <div class="button-group center">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" id="delete-room-button">Delete</button>
+            <button type="button" class="btn btn-success" id='game-start-button'>Start</button>
+            <button type="button" class="btn btn-success" id='create-room-button'>Create</button>
+          </div>          
+        </div>        
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/library/jQuery/jquery.js"></script>
+  <script src="assets/library/bootstrap/js/bootstrap.min.js"></script>
+  <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+  <script src="assets/js/gameroom.js"></script>
+</body>
+</html>
