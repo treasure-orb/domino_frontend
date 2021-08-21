@@ -6,7 +6,7 @@
         Vista por defecto en el Laboratorio de pruebas  
 		devildrey33_Lab->Opciones->Vista = Filas;
 
-        Ultima modificación el 14/12/2019
+        Ultima modificaciï¿½n el 14/12/2019
 */
 
 
@@ -61,7 +61,7 @@ var Domino_Opciones = function () {
         document.getElementById("NEquipo2").value = this.NombreEquipo[1];*/
     };
     
-    // Función que determina el idioma por defecto en la primera sesión, si ninguno coincide, se elige Ingles.
+    // Funciï¿½n que determina el idioma por defecto en la primera sesiï¿½n, si ninguno coincide, se elige Ingles.
     this.IdiomaPorDefecto = function() {
         var Idioma = navigator.language || navigator.userLanguage;
         // Si coincide con uno de los idiomas, lo devuelvo
@@ -70,7 +70,7 @@ var Domino_Opciones = function () {
         return 'en';
     };
     
-    // Función que asigna los nombres (de equipo i jugadores) por defecto, o los que hay guardados en el local storage
+    // Funciï¿½n que asigna los nombres (de equipo i jugadores) por defecto, o los que hay guardados en el local storage
     this.NombresPorDefecto = function() {
         var Nombres = { 
             'en' : { 

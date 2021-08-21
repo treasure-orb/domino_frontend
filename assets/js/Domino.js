@@ -86,16 +86,21 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
     Scroll          : function() {    },
     // Función que se llama al mover el mouse por el canvas
     MouseMove       : function(Evento) { 
-        this.MouseMovido = true;
-        this.PosMouse.x = ( Evento.clientX / window.innerWidth ) * 2 - 1;
-	this.PosMouse.y = - ( Evento.clientY / window.innerHeight ) * 2 + 1;
-        this.ComprobarMouse();
+            if(Domino.Partida.JugadorActual + 1 == position) {
+                this.MouseMovido = true;
+                this.PosMouse.x = ( Evento.clientX / window.innerWidth ) * 2 - 1;
+                this.PosMouse.y = - ( Evento.clientY / window.innerHeight ) * 2 + 1;
+                this.ComprobarMouse();
+            }         
+        
     },
     // Función que se llama al presionar un botón del mouse por el canvas
     MousePresionado : function(Evento) { },
     // Función que se llama al soltar un botón del mouse por el canvas
     MouseSoltado    : function(Evento) { 
-        this.Partida.JugadorColocar();
+        if(position == Domino.Partida.JugadorActual + 1) {
+            this.Partida.JugadorColocar();
+        }
     },
     // Función que se llama al entrar con el mouse en el canvas
     MouseEnter      : function(Evento) { },
@@ -114,7 +119,7 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
     TouchMove      : function(Evento) { 
         this.MouseMovido = true;
         this.PosMouse.x =   ( Evento.touches[0].clientX / window.innerWidth ) * 2 - 1;
-	this.PosMouse.y = - ( Evento.touches[0].clientY / window.innerHeight ) * 2 + 1;        
+	    this.PosMouse.y = - ( Evento.touches[0].clientY / window.innerHeight ) * 2 + 1;        
 //        this.ComprobarMouse();
     },    
     
@@ -197,13 +202,13 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
         
         this.Redimensionar();
 //        this.Camara.Rotar();
-        setTimeout(this.Partida.CrearFichas.bind(this.Partida), 10);
+        setTimeout(()=>{this.Partida.CrearFichas.bind(this.Partida)}, 10);
     },
     
     
     CrearLuces : function() {
         // Luz direccional
-        this.DirLight = new THREE.DirectionalLight( 0xfff1e0, 0.3 );
+        this.DirLight = new THREE.DirectionalLight( 0xffffff, 0 );
         this.DirLight.position.set( 0, 40, -30 ); //.normalize();
 //        this.DirLight.position.multiplyScalar( 20 );
         this.DirLight.castShadow = true;
@@ -219,9 +224,9 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
         this.Escena.add( this.DirLight );
         
         // Luz de ambiente  
-        this.HemiLight = new THREE.HemisphereLight( 0xeeeeee, 0xffffff, 0.7 );
-        this.HemiLight.color.setHSL( 0.6, 0.6, 0.6 );
-        this.HemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+        this.HemiLight = new THREE.HemisphereLight( 0xeeeeee, 0xffffff, 1 );
+        this.HemiLight.color.setHSL( 1, 1, 1 );
+        this.HemiLight.groundColor.setHSL( 1, 1, 1 );
         this.HemiLight.position.set( 0, 0, 0 );
         this.Escena.add( this.HemiLight );                 
     },

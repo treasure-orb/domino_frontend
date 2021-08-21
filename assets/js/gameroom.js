@@ -149,5 +149,5 @@ socket.on("setPosition", ({position})=>{
 })
 //start game
 socket.on('startGame', (roomEmail)=>{
-  location.href = './game.html?roomEmail='+roomEmail+"&position="+playerPosition;
+  location.href = './game.html?roomEmail='+roomEmail+"&position="+playerPosition+"&playerEmail="+email;
 })

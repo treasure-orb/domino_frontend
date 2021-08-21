@@ -85,7 +85,7 @@ var Domino_Ficha = function() {
         
                 
         // Creo la primera cara
-        this.Cara1 = new THREE.Mesh(  new THREE.BoxGeometry( 0.0, 0.0, 0.1 ), Texturas.MaterialCara);        
+        this.Cara1 = new THREE.Mesh(  new THREE.BoxGeometry( 1.0, 1.0, 0.1 ), Texturas.MaterialCara);        
         this.Ficha.add(this.Cara1);
         this.Cara1.position.set(-0.5, 0.0, 0.0);
         
@@ -198,7 +198,6 @@ var Domino_Ficha = function() {
             window.FinContadorIzquierda = 5;
             window.FinContadorDerecha   = 5;
         }
-        
         else {
             // Miro la dirección de la ficha origen
             switch (FichaOrigen.Direccion) {
@@ -232,19 +231,16 @@ var Domino_Ficha = function() {
                     
                 case "izquierda" :
                     if (FichaOrigen.Rama === "izquierda") {
-
                         // Correción para las fichas dobles si se llega al final de la izquierda
 /*                        if (window.ContadorIzquierda === window.FinContadorIzquierda && this.FichaDoble() === true) {
                             window.FinContadorIzquierda++;
                         }*/
                         
                         if (window.ContadorIzquierda !== 5) {
-
                             Ret = this.BuscarPosIzq(FichaOrigen);
                             this.Direccion = "izquierda";
                         }
                         else if (window.ContadorIzquierda === window.FinContadorIzquierda) {
-
                             Ret = this.BuscarPosInf(FichaOrigen);
                             this.Direccion = "abajo";
                         }
@@ -264,12 +260,10 @@ var Domino_Ficha = function() {
                         }*/
                             
                         if (window.ContadorDerecha !== 5) {
-                            
                             Ret = this.BuscarPosDer(FichaOrigen);
                             this.Direccion = "derecha";
                         }
                         else if (window.ContadorDerecha === window.FinContadorDerecha) {
-                            alert();
                             Ret = this.BuscarPosSup(FichaOrigen);
                             this.Direccion = "arriba";
                         }
@@ -313,12 +307,8 @@ var Domino_Ficha = function() {
         
         
         // Termino las posibles animaciones en curso
-        if (typeof(this.AniHover) !== "undefined") {
-            this.AniHover.Terminar();
-        }           
-        if (typeof(this.AniColocar) !== "undefined") {
-            this.AniColocar.Terminar(); 
-        } 
+        if (typeof(this.AniHover) !== "undefined")    this.AniHover.Terminar();        
+        if (typeof(this.AniColocar) !== "undefined")  this.AniColocar.Terminar();
         
         
         this.Colocada = true;
@@ -337,7 +327,6 @@ var Domino_Ficha = function() {
                 this.Ficha.rotation.x = Valores.rx;
             }.bind(this),
             FuncionTerminado : function() {
-               
                 if (this.Rama === "nada") {
                     Domino.Partida.FichaIzquierda = this;
                     Domino.Partida.FichaDerecha   = this;                
@@ -351,7 +340,6 @@ var Domino_Ficha = function() {
                     Domino.Partida.JugadorActual = 0;
                 }
                 Domino.Partida.TurnoActual ++;
-                console.log('111111111111111111111111', this);
                 
             }.bind(this)
             

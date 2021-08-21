@@ -8,10 +8,11 @@
 
         Ultima modificación el 28/02/2019
 // */
-// var isJugador        = [true, true, true, true];
+var isJugador        = [true, true, true, true];
 // const changerobot = (index) => {
 //     isJugador[index] = !isJugador[index];
 // }
+var socket = io('http://localhost:3030');
 
 var Domino_Partida = function() {    
     
@@ -53,8 +54,9 @@ var Domino_Partida = function() {
             if (Pos[0] > 5.0) {
                 Pos[0] = -4.5;
                 Pos[1] += 2.5;
-            }            
-        }      
+            }         
+        } 
+
     };    
     
     // Función que devuelve el jugador que empieza la mano
@@ -69,15 +71,26 @@ var Domino_Partida = function() {
         }        
     };
     
-    this.Empezar = function() {        
+    this.Empezar = function() {       
         this.Mano = 0;
         this.PuntosEquipo1 = 0;
         this.PuntosEquipo2 = 0;
-        this.Opciones.PuntosPorPartida = UI.PuntuacionPorPartida;        
-        this.Continuar();
+        this.Opciones.PuntosPorPartida = UI.PuntuacionPorPartida;
+        socket.emit('join-game-room', {roomEmail: roomemail, position: position});  
+        this.CrearFichas();
+        var gameCards = [];
+        this.Ficha.map((item) => {
+            gameCards.push(item.Valores);
+        })
+        if(playerEmail == roomemail){
+            setTimeout(()=>{
+                socket.emit('set-gamecards', {gameCards, roomemail});
+            }, 5000);
+                         
+        }        
     };
     
-    this.Continuar = function() { ////////////////////////////////continue hand
+    this.Continuar = function(playerCards) { ////////////////////////////////continue hand
         // Oculto el menu para empezar la partida
         UI.OcultarEmpezar();   
         // Oculto el menu para continuar la siguiente mano (desde una victoria)
@@ -96,7 +109,19 @@ var Domino_Partida = function() {
         
         // Muestro el menu con los datos de la mano actual
         UI.MostrarDatosMano(); /////////////////////////////////////////show history and information
-        
+        var Ficha = [];
+        this.CrearFichas();
+        playerCards.map((card) => {
+            this.Ficha.map((item) => {
+                if(card[0] == item.Valores[0] && card[1] == item.Valores[1]) {
+                    item.Colocada = false;
+                    Ficha.push(item);
+                }
+            })
+        })
+        this.Ficha = Object.assign({}, Ficha)
+        this.setCardsPosition(this.Ficha, this.Opciones, position);
+
         this.Mano ++;///////////////////////////Hand add
         this.ManoTerminada = false;
         
@@ -104,52 +129,13 @@ var Domino_Partida = function() {
         document.getElementById("Historial").innerHTML = "";
         
         // Vuelvo a crear las fichas
-        this.CrearFichas();
         
 //        this.Jugador = [];
         this.Pasado = 0;
         
-        // Mezclo el array de las fichas
-        var j, x, i;
-        for (i = this.Ficha.length - 1; i > 0; i--) {
-            this.Ficha[i].Colocada = false;
-            j = Math.floor(Math.random() * (i + 1));
-            x = this.Ficha[i];
-            this.Ficha[i] = this.Ficha[j];
-            this.Ficha[j] = x;            
-        }
-        
-        // Reparto las fichas
-/*        for (i = 0; i < 4; i ++) {
-            this.Jugador[i] = [];
-            for (j = 0; j < 7; j++) {
-                this.Jugador[i][j] = (i *7) + j;
-                this.Ficha[this.Jugador[i][j]].Colocada = false;
-            }
-        }*/
-        // Show other's card
-        // Coloco las fichas del jugador 1 y 3
-        for (i = 0; i < 7; i++) {
-            this.Ficha[i].RotarV();
-            this.Ficha[i].Ficha.position.set(-3.8 + (1.25 * i), 0, 4.5);
-            this.Ficha[14 + i].RotarV();
-            // if (this.Opciones.Descubierto === "false") this.Ficha[14 + i].RotarBocaAbajo();
-            this.Ficha[14 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, -11);
-        }
-        
-        // Coloco las fichas del jugador 2 y 4
-        for (i = 0; i < 7; i++) {
-            this.Ficha[7 + i].RotarH();
-            // if (this.Opciones.Descubierto === "false") this.Ficha[7 + i].RotarBocaAbajo();
-            this.Ficha[7 + i].Ficha.position.set(13, 0, -6.5 + (1.25 * i));
-            this.Ficha[21 + i].RotarH();
-            // if (this.Opciones.Descubierto === "false") this.Ficha[21 + i].RotarBocaAbajo();
-            this.Ficha[21 + i].Ficha.position.set(-13, 0, -6.5 + (1.25 * i));
-        }
-        
-        // Miro que jugador empieza
+
         this.JugadorInicio();
-        
+        // Miro que jugador empieza
         this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + " </span> " +
                                                 "<span" +
                                                     "data-idioma-en='starts'" +
@@ -165,11 +151,90 @@ var Domino_Partida = function() {
         
         this.Turno();        
     };
+
+    this.setCardsPosition = (Ficha) => {
+        switch (position) {
+            case 1: {
+                for (var i = 0; i < 7; i++) {
+                    Ficha[i].RotarV();
+                    Ficha[i].Ficha.position.set(-3.8 + (1.25 * i), 0, 4.5);
+                    Ficha[14 + i].RotarV();
+                     Ficha[14 + i].RotarBocaAbajo();
+                    Ficha[14 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, -11);
+                    Ficha[7 + i].RotarH();
+                     Ficha[7 + i].RotarBocaAbajo();
+                    Ficha[7 + i].Ficha.position.set(13, 0, -6.5 + (1.25 * i));
+                    Ficha[21 + i].RotarH();
+                     Ficha[21 + i].RotarBocaAbajo();
+                    Ficha[21 + i].Ficha.position.set(-13, 0, -6.5 + (1.25 * i));
+                }  
+                break;
+                
+            }
+            case 2: {
+
+                for (var i = 0; i < 7; i++) {
+                    Ficha[7 + i].RotarV();
+                    Ficha[7 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, 4.5);
+                    Ficha[21 + i].RotarV();
+                     Ficha[21 + i].RotarBocaAbajo();
+                    Ficha[21 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, -11);
+                    Ficha[14 + i].RotarH();
+                     Ficha[14 + i].RotarBocaAbajo();
+                    Ficha[14 + i].Ficha.position.set(13, 0, -6.5 + (1.25 * i));
+                    Ficha[i].RotarH();
+                     Ficha[i].RotarBocaAbajo();
+                    Ficha[i].Ficha.position.set(-13, 0, -6.5 + (1.25 * i));
+                }  
+                break;
+                
+            }
+            case 3: {
+
+                for (var i = 0; i < 7; i++) {
+                    Ficha[14 + i].RotarV();
+                    Ficha[14 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, 4.5);
+                    Ficha[i].RotarV();
+                     Ficha[i].RotarBocaAbajo();
+                    Ficha[i].Ficha.position.set(-3.8 + (1.25 * i), 0, -11);
+                    Ficha[21 + i].RotarH();
+                     Ficha[21 + i].RotarBocaAbajo();
+                    Ficha[21 + i].Ficha.position.set(13, 0, -6.5 + (1.25 * i));
+                    Ficha[7 + i].RotarH();
+                     Ficha[7 + i].RotarBocaAbajo();
+                    Ficha[7 + i].Ficha.position.set(-13, 0, -6.5 + (1.25 * i));
+                }  
+                
+                break;
+            }
+            case 4: {
+
+                for (var i = 0; i < 7; i++) {
+                    Ficha[21 + i].RotarV();
+                    Ficha[21 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, 4.5);
+                    Ficha[7 + i].RotarV();
+                     Ficha[7 + i].RotarBocaAbajo();
+                    Ficha[7 + i].Ficha.position.set(-3.8 + (1.25 * i), 0, -11);
+                    Ficha[i].RotarH();
+                     Ficha[i].RotarBocaAbajo();
+                    Ficha[i].Ficha.position.set(13, 0, -6.5 + (1.25 * i));
+                    Ficha[14 + i].RotarH();
+                     Ficha[14 + i].RotarBocaAbajo();
+                    Ficha[14 + i].Ficha.position.set(-13, 0, -6.5 + (1.25 * i));
+                }  
+                break;                
+            }
+        }
+        return Ficha
+    }
     
     
     // Función que ejecuta un turno
     this.Turno = function() {
+
+
         if (this.ManoTerminada === true) return;
+        console.log('111111111111111111111111111111111111111111111111111');                  
 
         console.log("Turno : " + this.TurnoActual);
         
@@ -189,21 +254,21 @@ var Domino_Partida = function() {
             for (var i = 0; i < 7; i ++) {
                 if (this.Ficha[(this.JugadorActual * 7) + i].Valores[0] === 6 && this.Ficha[(this.JugadorActual * 7) + i].Valores[1] === 6) {
                     this.Ficha[(this.JugadorActual * 7) + i].Colocar(false);
-                    setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);                    
+                    var interval = setInterval(()=>{if(this.TurnoActual) {setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno); clearInterval(interval)} }, 10)
+                     
 //                    this.MostrarMensaje(this.JugadorActual, "Jugador" + (this.JugadorActual + 1) + " tira : " + this.Ficha[(this.JugadorActual * 7) + i].Valores[1] + " | " + this.Ficha[(this.JugadorActual * 7) + i].Valores[0]);
                     this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + "</span>" + 
                                                             "<span " + 
                                                                 "data-idioma-en=' throws : '" + 
                                                                 "data-idioma-cat=' tira : '"  + 
                                                                 "data-idioma-es=' tira : '></span>" +
-                                                            "<img src='./SVG/Domino.svg#Ficha_6-6' />");                    
+                                                            "<img src='./SVG/Domino.svg#Ficha_6-6' />");                   
                 }
             }
             
         }
         // El resto de turnos 
         else {            
-
             console.log("Izq: " + this.FichaIzquierda.ValorLibre() + " Der: " + this.FichaDerecha.ValorLibre());         
             // Cuento las posibilidades para la izquierda y la derecha
             var Posibilidades = [];
@@ -223,7 +288,6 @@ var Domino_Partida = function() {
             Posibilidades.sort(function(a, b){                
                 return (this.Ficha[a.Pos].Valores[0] + this.Ficha[a.Pos].Valores[1] > this.Ficha[b.Pos].Valores[0] + this.Ficha[b.Pos].Valores[1]) ? a : b;
             }.bind(this));
-            console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqq',Posibilidades);
             // Si tiene posibilidades
             if (Posibilidades.length > 0)  {
                 this.Pasado = 0;
@@ -251,6 +315,7 @@ var Domino_Partida = function() {
                 }
                 // Turno del jugador
                 else {
+
                     this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + "</span>" + 
                                                             "<span  data-idioma-en=' your turn ' " +
                                                                "data-idioma-cat=' el teu torn ' " + 
@@ -389,11 +454,36 @@ var Domino_Partida = function() {
     // Funci�n para mostrar un mensaje especifico para un jugador
     this.MostrarMensaje = function(Jugador, Texto, ColFondo) {
         var ColorFondo = (typeof(ColFondo) === "undefined") ? "negro" : ColFondo;
-        var Msg = document.getElementById("Msg" + (Jugador + 1));
+        var messagePosition;
+        switch(position) {
+            case 1: {
+                messagePosition = Jugador;
+                break;
+            }
+            case 2: {
+                if(Jugador == 0) messagePosition = 3;
+                else messagePosition = Jugador - 1;
+                break;
+            }
+            case 3: {
+                if(Jugador == 0) messagePosition = 2;
+                else if(Jugador == 1) messagePosition = 3;
+                else messagePosition = Jugador - 2;
+                break;
+            }
+            case 4: {
+                if(Jugador == 0) messagePosition = 1;
+                else if(Jugador == 1) messagePosition = 2;
+                else if(Jugador == 2) messagePosition = 3;
+                else messagePosition = 0;
+                break;
+            }
+        }
+        var Msg = document.getElementById("Msg" + (messagePosition + 1));
         Msg.setAttribute("MsgVisible", "true");        
         Msg.setAttribute("ColorFondo", ColorFondo);
         if (this.TimerMsg[Jugador] !== 0) clearTimeout(this.TimerMsg);
-        this.TimerMsg[Jugador] = setTimeout(function(J) { document.getElementById("Msg" + (J + 1)).setAttribute("MsgVisible", "false"); this.TimerMsg[J] = 0; }.bind(this, Jugador), this.TiempoTurno * 2);
+        this.TimerMsg[Jugador] = setTimeout(function(J) {document.getElementById("Msg" + (messagePosition + 1)).setAttribute("MsgVisible", "false"); this.TimerMsg[J] = 0; }.bind(this, Jugador), this.TiempoTurno * 2);
         Msg.innerHTML = Texto;               
         
         
@@ -417,7 +507,6 @@ var Domino_Partida = function() {
                 }
             }
 
-            console.log('aaaaaaaaaaaaaaaaaaaaaaa', this.FichaDerecha.ValorLibre());
             
             for (var i = this.JugadorActual*7; i < this.JugadorActual*7+7; i++) {
                 // Es muy importante saber si la ficha está hover o no
@@ -459,13 +548,17 @@ var Domino_Partida = function() {
                         
                         // Compruebo si se ha terminado la mano
                         if (this.ComprobarManoTerminada() === true) return;
+
                         
                         setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);
                     }
-                    
                 }
             }
         
     };
+    socket.on('apply-gamecards', ({playerCards}) => {
+        this.Continuar(playerCards);
+    })
     
 };
+

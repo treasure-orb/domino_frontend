@@ -14,7 +14,7 @@
     <body>
         
         <!-- Marco para empezar partida -->
-        <div id='MarcoEmpezar' class='MarcoCanvas'>
+        <div id='MarcoEmpezar' class='MarcoCanvas' style="display: none;">
             <h1>
                 <span data-idioma-en='Welcome to Domino ' 
                       data-idioma-cat="Benvingut a Dominó " 
@@ -442,7 +442,17 @@
         </div>
         <!-- <button onclick='changerobot(2)'>Change</button> -->
 
+        
         <!-- Three.JS -->
+        <script>
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const roomemail = urlParams.get('roomEmail')
+            const position = urlParams.get('position') * 1;
+            const playerEmail = urlParams.get('playerEmail');
+        </script>
+        <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+        <script src="./assets/library/jQuery/jquery.js"></script>
         <script src="./assets/library/three/three.min.js"></script>
         <!-- ObjetoCanvas similar al ObjetoBanner para testear Banners -->
         <script src="./assets/js/ObjetoCanvas.js"></script>
@@ -455,6 +465,7 @@
         <script src="./assets/js/Domino_UI.js"></script>        
         <script src="./assets/js/Domino_Opciones.js"></script>        
         <script src="./assets/js/Domino_Partida.js"></script>        
-        <script src="./assets/js/Domino.js"></script>        
+        <script src="./assets/js/Domino.js"></script>   
+        <script> setTimeout(()=>{$('#BotonEmpezar').click()}, 2000)</script>     
     </body>
 </html>
