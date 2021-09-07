@@ -99,7 +99,7 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
     // Función que se llama al soltar un botón del mouse por el canvas
     MouseSoltado    : function(Evento) { 
         if(position == Domino.Partida.JugadorActual + 1) {
-            this.Partida.JugadorColocar();
+            this.Partida.JugadorColocar(null, null, position);
         }
     },
     // Función que se llama al entrar con el mouse en el canvas
@@ -310,7 +310,7 @@ DominoThree.prototype = Object.assign( Object.create(ObjetoCanvas.prototype) , {
                     this.Partida.Ficha[f].AsignarHover(Hover[f]);
                 }
             }
-
+            
 
     },
         

@@ -136,7 +136,6 @@ var Domino_Ficha = function() {
             if (this.AniHover.Terminado() === false) return;
 //            this.AniHover.Terminar();
         }
-        
         this.Hover = Hover;
         
         if (typeof(Domino.Partida.FichaDerecha.ValorLibre) === "undefined") return;

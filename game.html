@@ -444,14 +444,16 @@
 
         
         <!-- Three.JS -->
+        <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
         <script>
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const roomemail = urlParams.get('roomEmail')
             const position = urlParams.get('position') * 1;
             const playerEmail = urlParams.get('playerEmail');
-        </script>
-        <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+            var socket = io('http://localhost:3030');
+            socket.emit("playerIdRecord", {roomEmail: roomemail, playerPosition: position-1})
+        </script>        
         <script src="./assets/library/jQuery/jquery.js"></script>
         <script src="./assets/library/three/three.min.js"></script>
         <!-- ObjetoCanvas similar al ObjetoBanner para testear Banners -->
@@ -466,6 +468,6 @@
         <script src="./assets/js/Domino_Opciones.js"></script>        
         <script src="./assets/js/Domino_Partida.js"></script>        
         <script src="./assets/js/Domino.js"></script>   
-        <script> setTimeout(()=>{$('#BotonEmpezar').click()}, 2000)</script>     
+        <script> setTimeout(()=>{$('#BotonEmpezar').click()}, 5000)</script>     
     </body>
 </html>

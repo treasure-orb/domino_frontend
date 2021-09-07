@@ -9,9 +9,7 @@
         Ultima modificación el 28/02/2019
 // */
 var isJugador        = [true, true, true, true];
-// const changerobot = (index) => {
-//     isJugador[index] = !isJugador[index];
-// }
+
 var socket = io('http://localhost:3030');
 
 var Domino_Partida = function() {    
@@ -27,6 +25,7 @@ var Domino_Partida = function() {
     this.Pasado           = 0;
     this.Ficha            = [];
     this.TiempoTurno      = 1250;
+    this.robotTiempoTurno = 2500;
     this.TimerMsg         = [ 0, 0, 0, 0 ];
     this.ManoTerminada    = false;
     this.PuntosEquipo1    = 0; // 
@@ -232,10 +231,7 @@ var Domino_Partida = function() {
     // Función que ejecuta un turno
     this.Turno = function() {
 
-
         if (this.ManoTerminada === true) return;
-        console.log('111111111111111111111111111111111111111111111111111');                  
-
         console.log("Turno : " + this.TurnoActual);
         
         document.getElementById("Mano").innerHTML    = this.Mano; //Mano=hand
@@ -311,7 +307,7 @@ var Domino_Partida = function() {
                                                "data-idioma-es=' tira : '></span>" + 
                                         "<img src='./SVG/Domino.svg#Ficha_" + this.Ficha[Posibilidades[0].Pos].Valores[1] + "-" + this.Ficha[Posibilidades[0].Pos].Valores[0] +"' />");
                     console.log("Jugador" + (this.JugadorActual + 1) + " tira : " + this.Ficha[Posibilidades[0].Pos].Valores[1] + " | " + this.Ficha[Posibilidades[0].Pos].Valores[0]);
-                    setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);
+                    setTimeout(function() { this.Turno(); }.bind(this), this.robotTiempoTurno);
                 }
                 // Turno del jugador
                 else {
@@ -493,72 +489,130 @@ var Domino_Partida = function() {
     };
     
     // Coloca la ficha presionada por el jugador (si es posible)
-    this.JugadorColocar = function() {
+    this.JugadorColocar = function(cardIndex, hoverNumber, pos) {
 //        var Rama = "izquierda";
-            
-            // Miro que no se este colocando una ficha
-            for (var f = 0; f < this.Ficha.length; f++) {
-                
-                if (typeof(this.Ficha[f].AniColocar) !== "undefined") {
-                    if (this.Ficha[f].AniColocar.Terminado() === false){
-                    return;
+            if(pos == position) {
+                // Miro que no se este colocando una ficha
+                for (var f = 0; f < this.Ficha.length; f++) {
+                                
+                    if (typeof(this.Ficha[f].AniColocar) !== "undefined") {
+                        if (this.Ficha[f].AniColocar.Terminado() === false){
+                        return;
 
+                        }
+                    }
+                }
+
+
+                for (var i = this.JugadorActual*7; i < this.JugadorActual*7+7; i++) {
+                    // Es muy importante saber si la ficha está hover o no
+                    if (this.Ficha[i].Hover > 0 && this.Ficha[i].Colocada === false) {
+                        // Si la ficha se puede colocar en las dos ramas
+                        socket.emit('cardClick', {cardIndex: i, hoverNumber: 1, pos: position, roomEmail: roomemail});
+                        var nPos = -1;
+                        if ((this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) && 
+                            (this.Ficha[i].Valores[0] === this.FichaDerecha.ValorLibre()   || this.Ficha[i].Valores[1] === this.FichaDerecha.ValorLibre()) && 
+                            (this.FichaIzquierda.ValorLibre() !== this.FichaDerecha.ValorLibre())) {
+                            
+                            if (this.Ficha[i].Hover === 1) {
+                                if (this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
+                                else                                                               nPos = this.FichaDerecha;    
+                            }
+                            else if (this.Ficha[i].Hover === 2) {
+                                if (this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
+                                else                                                               nPos = this.FichaDerecha;    
+                            }
+                        }
+                        else { // la ficha solo se puede colocar en una rama
+                            if (this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) {
+                                nPos = this.FichaIzquierda;
+                            }
+                            if (this.Ficha[i].Valores[0] === this.FichaDerecha.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaDerecha.ValorLibre()) {
+                                nPos = this.FichaDerecha;
+                            }
+                        }
+                        
+                        if (nPos !== -1) {
+                            console.log ("Jugador1 tira " + this.Ficha[i].Valores[0] + " | " + this.Ficha[i].Valores[1]);
+                            this.Ficha[i].Colocar(nPos, true);
+                            this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + "</span> " + 
+                                                " <span " +
+                                                    "data-idioma-en=' throws : '" + 
+                                                    "data-idioma-cat=' tira : '" + 
+                                                    "data-idioma-cas=' tira : '>" + 
+                                                "</span>" + 
+                                                "<img src='./SVG/Domino.svg#Ficha_" + this.Ficha[i].Valores[1] + "-" + this.Ficha[i].Valores[0] +"' />");
+                            
+                            // Compruebo si se ha terminado la mano
+                            if (this.ComprobarManoTerminada() === true) return;
+
+                            
+                            setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);
+                        }
                     }
                 }
             }
+            else {
+                // Miro que no se este colocando una ficha                
+                    // Es muy importante saber si la ficha está hover o no
+                        // Si la ficha se puede colocar en las dos ramas
+                        var nPos = -1;
+                        if ((this.Ficha[cardIndex].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[cardIndex].Valores[1] === this.FichaIzquierda.ValorLibre()) && 
+                            (this.Ficha[cardIndex].Valores[0] === this.FichaDerecha.ValorLibre()   || this.Ficha[cardIndex].Valores[1] === this.FichaDerecha.ValorLibre()) && 
+                            (this.FichaIzquierda.ValorLibre() !== this.FichaDerecha.ValorLibre())) {
+                            
+                            if (this.Ficha[cardIndex].Hover === 1) {
+                                if (this.Ficha[icardIndex].Valores[0] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
+                                else                                                               nPos = this.FichaDerecha;    
+                            }
+                            else if (this.Ficha[cardIndex].Hover === 2) {
+                                if (this.Ficha[cardIndex].Valores[1] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
+                                else                                                               nPos = this.FichaDerecha;    
+                            }
+                        }
+                        else { // la ficha solo se puede colocar en una rama
+                            if (this.Ficha[cardIndex].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[cardIndex].Valores[1] === this.FichaIzquierda.ValorLibre()) {
+                                nPos = this.FichaIzquierda;
+                            }
+                            if (this.Ficha[cardIndex].Valores[0] === this.FichaDerecha.ValorLibre() || this.Ficha[cardIndex].Valores[1] === this.FichaDerecha.ValorLibre()) {
+                                nPos = this.FichaDerecha;
+                            }
+                        }
+                        
+                        if (nPos !== -1) {
+                            console.log ("Jugador1 tira " + this.Ficha[cardIndex].Valores[0] + " | " + this.Ficha[cardIndex].Valores[1]);
+                            this.Ficha[cardIndex].Colocar(nPos, true);
+                            this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + "</span> " + 
+                                                " <span " +
+                                                    "data-idioma-en=' throws : '" + 
+                                                    "data-idioma-cat=' tira : '" + 
+                                                    "data-idioma-cas=' tira : '>" + 
+                                                "</span>" + 
+                                                "<img src='./SVG/Domino.svg#Ficha_" + this.Ficha[cardIndex].Valores[1] + "-" + this.Ficha[cardIndex].Valores[0] +"' />");
+                            
+                            // Compruebo si se ha terminado la mano
+                            if (this.ComprobarManoTerminada() === true) return;
 
-            
-            for (var i = this.JugadorActual*7; i < this.JugadorActual*7+7; i++) {
-                // Es muy importante saber si la ficha está hover o no
-                if (this.Ficha[i].Hover > 0 && this.Ficha[i].Colocada === false) {
-                    // Si la ficha se puede colocar en las dos ramas
-                    var nPos = -1;
-                    if ((this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) && 
-                        (this.Ficha[i].Valores[0] === this.FichaDerecha.ValorLibre()   || this.Ficha[i].Valores[1] === this.FichaDerecha.ValorLibre()) && 
-                        (this.FichaIzquierda.ValorLibre() !== this.FichaDerecha.ValorLibre())) {
-                        
-                        if (this.Ficha[i].Hover === 1) {
-                            if (this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
-                            else                                                               nPos = this.FichaDerecha;    
+                            
+                            setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);
                         }
-                        else if (this.Ficha[i].Hover === 2) {
-                            if (this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) nPos = this.FichaIzquierda;  
-                            else                                                               nPos = this.FichaDerecha;    
-                        }
-                    }
-                    else { // la ficha solo se puede colocar en una rama
-                        if (this.Ficha[i].Valores[0] === this.FichaIzquierda.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaIzquierda.ValorLibre()) {
-                            nPos = this.FichaIzquierda;
-                        }
-                        if (this.Ficha[i].Valores[0] === this.FichaDerecha.ValorLibre() || this.Ficha[i].Valores[1] === this.FichaDerecha.ValorLibre()) {
-                            nPos = this.FichaDerecha;
-                        }
-                    }
-                    
-                    if (nPos !== -1) {
-                        console.log ("Jugador1 tira " + this.Ficha[i].Valores[0] + " | " + this.Ficha[i].Valores[1]);
-                        this.Ficha[i].Colocar(nPos, true);
-                        this.MostrarMensaje(this.JugadorActual, "<span>" + this.Opciones.NombreJugador[this.JugadorActual] + "</span> " + 
-                                            " <span " +
-                                                "data-idioma-en=' throws : '" + 
-                                                "data-idioma-cat=' tira : '" + 
-                                                "data-idioma-cas=' tira : '>" + 
-                                            "</span>" + 
-                                            "<img src='./SVG/Domino.svg#Ficha_" + this.Ficha[i].Valores[1] + "-" + this.Ficha[i].Valores[0] +"' />");
-                        
-                        // Compruebo si se ha terminado la mano
-                        if (this.ComprobarManoTerminada() === true) return;
-
-                        
-                        setTimeout(function() { this.Turno(); }.bind(this), this.TiempoTurno);
-                    }
-                }
             }
+            
         
     };
     socket.on('apply-gamecards', ({playerCards}) => {
         this.Continuar(playerCards);
     })
-    
+    socket.on('playersCardClick', ({cardIndex, hoverNumber, pos}) => {
+        if(pos != position) {
+            this.Ficha[cardIndex].Hover = hoverNumber;
+            this.JugadorColocar(cardIndex, hoverNumber, pos);
+        }
+
+    })
+    socket.on('onePlayerOffline', ({playerPosition}) => {
+        console.log('1111111111111111111111', playerPosition);
+        isJugador[playerPosition-1] = false;
+    })
 };
 
